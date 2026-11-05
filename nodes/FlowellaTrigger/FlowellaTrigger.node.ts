@@ -54,7 +54,7 @@ export class FlowellaTrigger implements INodeType {
 		version: 1,
 		subtitle: '={{($parameter["events"] || []).join(", ") || "all events"}}',
 		description:
-			'Starts a workflow when Flowella sends a webhook. Copy the production URL into Flowella Settings → Webhooks and choose the events there. This node filters again locally. Flowella waits 10 seconds, retries 3 times, and disables the endpoint after 10 consecutive failures, so a paused workflow can turn the endpoint off.',
+			'Starts a workflow when Flowella sends a webhook. In Flowella open your organisation, then Settings → Webhooks (https://app.flowella.io, path /{organisation}/settings/webhooks). Paste the production URL from this node and select events there. This node filters again locally. Flowella waits 10 seconds, retries 3 times, and disables the endpoint after 10 consecutive failures, so a paused workflow can turn the endpoint off.',
 		defaults: { name: 'Flowella Trigger' },
 		inputs: [],
 		outputs: [NodeConnectionTypes.Main],

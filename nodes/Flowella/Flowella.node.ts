@@ -2,9 +2,15 @@ import type { INodeProperties, INodeType, INodeTypeDescription } from 'n8n-workf
 import { NodeConnectionTypes } from 'n8n-workflow';
 
 import { flowellaRoutes } from './generated/routes';
+import { mapFlowellaHttpError } from './http-errors';
+
+const errorOutput = {
+	postReceive: [mapFlowellaHttpError],
+};
 
 const listOutput = {
 	postReceive: [
+		mapFlowellaHttpError,
 		{
 			type: 'rootProperty' as const,
 			properties: {
@@ -53,6 +59,7 @@ export class Flowella implements INodeType {
 		requestDefaults: {
 			baseURL: '={{$credentials.baseUrl.replace(/\\/$/, "")}}',
 			url: '',
+			ignoreHttpStatusErrors: true,
 			headers: {
 				Accept: 'application/json',
 				'Content-Type': 'application/json',
@@ -90,6 +97,7 @@ export class Flowella implements INodeType {
 								url: flowellaRoutes.messageSend.path,
 								body: '={{({ to: $parameter["to"], text: $parameter["text"], ...($parameter["whatsappChannelId"] ? { whatsappChannelId: $parameter["whatsappChannelId"] } : {}) })}}',
 							},
+							output: errorOutput,
 						},
 					},
 				],
@@ -168,6 +176,7 @@ export class Flowella implements INodeType {
 								url: flowellaRoutes.contactUpsert.path,
 								body: '={{ Object.fromEntries(Object.entries({ phone: $parameter["phone"], name: $parameter["name"], email: $parameter["email"], waId: $parameter["waId"], externalId: $parameter["externalId"] }).filter(([, value]) => value !== "" && value !== undefined)) }}',
 							},
+							output: errorOutput,
 						},
 					},
 					{
@@ -180,6 +189,7 @@ export class Flowella implements INodeType {
 								url: flowellaRoutes.optOut.path,
 								body: '={{ ({ action: $parameter["action"], whatsappChannelId: $parameter["whatsappChannelId"], phone: $parameter["phone"], ...($parameter["action"] === "set" && $parameter["reason"] ? { reason: $parameter["reason"] } : {}) }) }}',
 							},
+							output: errorOutput,
 						},
 					},
 				],
@@ -222,6 +232,7 @@ export class Flowella implements INodeType {
 								url: flowellaRoutes.templateSend.path,
 								body: '={{ Object.fromEntries(Object.entries({ templateId: $parameter["templateId"], templateWabaId: $parameter["templateWabaId"], whatsappChannelId: $parameter["whatsappChannelId"], scheduledAt: $parameter["scheduledAt"], throttlePerHour: $parameter["throttlePerHour"] || undefined, headerMedia: $parameter["headerMedia"] ? JSON.parse($parameter["headerMedia"]) : undefined, carouselCards: $parameter["carouselCards"] ? JSON.parse($parameter["carouselCards"]) : undefined, recipients: ($parameter["recipients"]?.recipient ?? []).map((row) => ({ phone: row.phone, bodyParameters: (row.variables?.variable ?? []).map((item) => item.value) })) }).filter(([, value]) => value !== "" && value !== undefined && !(Array.isArray(value) && value.length === 0))) }}',
 							},
+							output: errorOutput,
 						},
 					},
 				],
@@ -247,6 +258,7 @@ export class Flowella implements INodeType {
 									endDate: queryValue('endDate'),
 								},
 							},
+							output: errorOutput,
 						},
 					},
 				],
@@ -466,6 +478,7 @@ export class Flowella implements INodeType {
 							},
 							output: {
 								postReceive: [
+									mapFlowellaHttpError,
 									{
 										type: 'rootProperty' as const,
 										properties: { property: 'items' },
