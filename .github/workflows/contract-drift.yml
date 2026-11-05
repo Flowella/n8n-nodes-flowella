@@ -1,0 +1,21 @@
+name: Contract drift
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: npm
+      - run: npm ci
+      - name: Fail when the live OpenAPI contract drifts
+        run: npm run generate:check
+        env:
+          FLOWELLA_OPENAPI_URL: https://api.flowella.io/v1/openapi.json

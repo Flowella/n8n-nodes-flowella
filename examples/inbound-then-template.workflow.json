@@ -1,0 +1,46 @@
+{
+  "name": "Flowella inbound message then template",
+  "nodes": [
+    {
+      "parameters": {
+        "events": ["message.received"]
+      },
+      "name": "Flowella Trigger",
+      "type": "n8n-nodes-flowella.flowellaTrigger",
+      "typeVersion": 1,
+      "position": [0, 0],
+      "credentials": {
+        "flowellaApi": "Flowella API"
+      }
+    },
+    {
+      "parameters": {
+        "resource": "template",
+        "operation": "send",
+        "templateId": "",
+        "templateWabaId": "",
+        "whatsappChannelId": "",
+        "recipients": {
+          "recipient": [
+            {
+              "phone": "={{$json.contactPhone}}",
+              "variables": { "variable": [] }
+            }
+          ]
+        }
+      },
+      "name": "Flowella",
+      "type": "n8n-nodes-flowella.flowella",
+      "typeVersion": 1,
+      "position": [320, 0],
+      "credentials": {
+        "flowellaApi": "Flowella API"
+      }
+    }
+  ],
+  "connections": {
+    "Flowella Trigger": {
+      "main": [[{ "node": "Flowella", "type": "main", "index": 0 }]]
+    }
+  }
+}

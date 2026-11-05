@@ -6,4 +6,7 @@ All notable changes to this package are documented here. Versions follow SemVer 
 
 ### Added
 
-- Initial scaffold from the n8n-node CLI (`programmatic/example` template), MIT license, CI (lint and build), and provenance publish workflow.
+- Flowella API credential (`GET /v1/ping`) and declarative action node for messages, conversations, contacts, opt-outs, templates, and analytics.
+- Flowella Trigger with manual webhook registration and HMAC verification of `X-Flowella-Signature`.
+- OpenAPI contract generator and CI drift check against `https://api.flowella.io/v1/openapi.json` (contract 1.1.0).
+- Example workflow for an inbound message followed by a template send.

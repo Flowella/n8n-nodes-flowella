@@ -1,23 +1,108 @@
 # n8n-nodes-flowella
 
-Community node for [n8n](https://n8n.io/) that connects Flowella WhatsApp messaging to your workflows.
+Community node for [n8n](https://n8n.io/) that connects [Flowella](https://flowella.io) WhatsApp messaging to a workflow.
 
-Status: pre-release (`0.1.0-alpha`). Operations and the trigger node are implemented in later releases.
+It talks to the public Flowella REST API (`flowellaApiContract` in `package.json`, currently generated from OpenAPI 1.1.0) and to Flowella outbound webhooks. The node does not embed n8n.
 
 ## Installation
 
-Install from **Settings → Community Nodes** in n8n using the package name `n8n-nodes-flowella`.
+In n8n, open **Settings → Community Nodes** and install `n8n-nodes-flowella`.
 
-## Compatibility
+On a self-hosted instance you can also install the npm package into `~/.n8n/nodes` and restart n8n.
 
-- n8n: `n8n-workflow` peer dependency (see `package.json`)
-- Flowella REST API: v1
+Minimum n8n version: one that ships `n8n-workflow` as a peer of this package (n8n 1.x).
 
-## Resources
+## Credentials
 
-- [Flowella API reference](https://knowledge.flowella.io/api-reference/introduction)
-- [n8n community nodes docs](https://docs.n8n.io/integrations/community-nodes/)
+1. In Flowella, open **Settings → API keys** and create an organisation key. It starts with `flo_`.
+2. In n8n, create a **Flowella API** credential.
+3. Paste the key. Leave **Base URL** as `https://api.flowella.io` unless you are calling staging.
+4. For the trigger, paste the webhook **signing secret** from the Flowella webhook endpoint into **Webhook Signing Secret**.
 
-## License
+The credential test calls `GET /v1/ping`. A valid key returns the organisation id. An invalid key fails with the API error message (401).
 
-[MIT](LICENSE)
+## Trigger
+
+The trigger does not create the webhook for you. Flowella webhook endpoints are managed in the product UI.
+
+1. Add **Flowella Trigger** and open it. n8n shows a production webhook URL.
+2. In Flowella, open **Settings → Webhooks**, paste that URL, and select the events you want delivered.
+3. Copy the endpoint signing secret into the n8n credential.
+4. Use **Send test** in Flowella Settings. The node emits a `webhook.test` item.
+
+Leave **Events** empty to emit every delivered event. A selected list drops other product events with HTTP 200 and does not start the workflow. A bad signature returns HTTP 401 and does not start the workflow.
+
+Flowella waits 10 seconds, tries the request 3 times, and disables the endpoint after 10 consecutive failures. A paused n8n workflow can therefore turn the endpoint off.
+
+### Events
+
+`message.received`, `message.sent`, `message.delivered`, `message.read`, `message.failed`, `conversation.opened`, `conversation.closed`, `optout.created`, `template.status_updated`, `contact.created`, `contact.updated`, `contact.deleted`, and the synthetic `webhook.test`.
+
+Each item has `eventType`, `eventId`, `occurredAt`, `organizationId`, `conversationId`, `contactId`, `contactPhone`, `messageBody`, and the original `data` object.
+
+Sample `message.received` body (the signed raw JSON):
+
+```json
+{
+	"id": "evt_123",
+	"type": "message.received",
+	"occurred_at": "2026-11-05T04:00:00.000Z",
+	"version": "1.1.0",
+	"data": {
+		"organizationId": "clorg",
+		"conversationId": "clconv",
+		"contactId": "clcontact",
+		"phone": "+15551234567",
+		"text": "Hello"
+	}
+}
+```
+
+The same envelope is used for the other events. `data` carries the resource that changed (message, conversation, contact, opt-out, or template). `webhook.test` looks like:
+
+```json
+{
+	"id": "evt_test",
+	"type": "webhook.test",
+	"created_at": "2026-11-05T04:00:00.000Z",
+	"payload_version": "legacy",
+	"data": { "test": true, "sentAt": "2026-11-05T04:00:00.000Z" }
+}
+```
+
+## Operations
+
+| Resource     | Operation            | API                       |
+| ------------ | -------------------- | ------------------------- |
+| Message      | Send                 | `POST /v1/messages`       |
+| Conversation | List                 | `GET /v1/conversations`   |
+| Contact      | List                 | `GET /v1/contacts`        |
+| Contact      | Create or Update     | `POST /v1/contacts`       |
+| Contact      | Set or Clear Opt-out | `POST /v1/opt-outs`       |
+| Template     | List                 | `GET /v1/templates`       |
+| Template     | Send                 | `POST /v1/templates/send` |
+| Analytics    | Get                  | `GET /v1/analytics`       |
+
+List operations follow `nextCursor` when **Return All** is on, otherwise they send `limit`. Template send takes recipients with ordered body variables. The template dropdown is filled from `GET /v1/templates`.
+
+API errors are raised as n8n node errors. Flowella returns `{ "error": { "message" } }` for 400, 401, 402, 403, 404, and 429, and n8n shows that message. 429 is a rate limit and can be retried.
+
+## Example
+
+`examples/inbound-then-template.workflow.json` listens for `message.received` and sends a template. Import it with **Workflows → Import from file**. You still need a Flowella API credential and a real template id.
+
+A written walkthrough is in `examples/inbound-then-template.md`.
+
+## Contract drift
+
+`npm run generate` refreshes `nodes/Flowella/generated/` from `https://api.flowella.io/v1/openapi.json`. Set `FLOWELLA_OPENAPI_URL` to point the same script at staging. CI and a daily workflow fail when the committed contract differs.
+
+## Verification
+
+Submit from the [n8n Creator Portal](https://docs.n8n.io/integrations/community-nodes/build-community-nodes/) only after a stable (not prerelease) version is on npm with a provenance badge, the GitHub repo is public, `dependencies` is empty, and `npx @n8n/scan-community-package n8n-nodes-flowella` prints that the package passed. The publish workflow runs that scan after each tag.
+
+## License and support
+
+[MIT](LICENSE). Copyright Discover Digital.
+
+Support: open an issue on this repository or contact Discover Digital via [flowella.io](https://flowella.io).

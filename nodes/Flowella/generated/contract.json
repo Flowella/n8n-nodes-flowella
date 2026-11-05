@@ -1,0 +1,120 @@
+{
+  "contractVersion": "1.1.0",
+  "operations": {
+    "analyticsGet": {
+      "body": [],
+      "method": "GET",
+      "operationId": "v1AnalyticsOutbound",
+      "path": "/v1/analytics",
+      "query": [
+        "endDate",
+        "startDate"
+      ]
+    },
+    "contactList": {
+      "body": [],
+      "method": "GET",
+      "operationId": "v1ListContacts",
+      "path": "/v1/contacts",
+      "query": [
+        "createdAfter",
+        "cursor",
+        "deletedAfter",
+        "externalId",
+        "limit",
+        "order",
+        "sort",
+        "updatedAfter"
+      ]
+    },
+    "contactUpsert": {
+      "body": [
+        "email",
+        "externalId",
+        "name",
+        "phone",
+        "waId"
+      ],
+      "method": "POST",
+      "operationId": "v1UpsertContact",
+      "path": "/v1/contacts",
+      "query": []
+    },
+    "conversationList": {
+      "body": [],
+      "method": "GET",
+      "operationId": "v1ListConversations",
+      "path": "/v1/conversations",
+      "query": [
+        "createdAfter",
+        "cursor",
+        "deletedAfter",
+        "limit",
+        "order",
+        "sort",
+        "status",
+        "updatedAfter"
+      ]
+    },
+    "messageSend": {
+      "body": [
+        "text",
+        "to",
+        "whatsappChannelId"
+      ],
+      "method": "POST",
+      "operationId": "v1SendMessage",
+      "path": "/v1/messages",
+      "query": []
+    },
+    "optOut": {
+      "body": [
+        "action",
+        "phone",
+        "reason",
+        "whatsappChannelId"
+      ],
+      "method": "POST",
+      "operationId": "v1OptOutsMutate",
+      "path": "/v1/opt-outs",
+      "query": []
+    },
+    "ping": {
+      "body": [],
+      "method": "GET",
+      "operationId": "v1Ping",
+      "path": "/v1/ping",
+      "query": []
+    },
+    "templateList": {
+      "body": [],
+      "method": "GET",
+      "operationId": "v1ListTemplates",
+      "path": "/v1/templates",
+      "query": [
+        "cursor",
+        "limit",
+        "search",
+        "status",
+        "whatsappChannelId"
+      ]
+    },
+    "templateSend": {
+      "body": [
+        "carouselCards",
+        "headerMedia",
+        "recipients",
+        "scheduledAt",
+        "templateId",
+        "templateWabaId",
+        "throttlePerHour",
+        "whatsappChannelId"
+      ],
+      "method": "POST",
+      "operationId": "v1SendTemplatesBulk",
+      "path": "/v1/templates/send",
+      "query": []
+    }
+  },
+  "source": "https://api.flowella.io/v1/openapi.json"
+}

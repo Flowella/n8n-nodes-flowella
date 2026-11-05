@@ -28,7 +28,15 @@ jobs:
         run: 'npm ci'
 
       - name: Run lint
-        run: 'npm run lint'
+        run: npm run lint
+
+      - name: Check OpenAPI contract
+        run: npm run generate:check
+        env:
+          FLOWELLA_OPENAPI_URL: https://api.flowella.io/v1/openapi.json
 
       - name: Run build
-        run: 'npm run build'
+        run: npm run build
+
+      - name: Test signature verification
+        run: npm test

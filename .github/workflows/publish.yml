@@ -97,3 +97,8 @@ jobs:
           npm run release
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Scan the published package
+        run: |
+          npx --yes @n8n/scan-community-package "n8n-nodes-flowella@${GITHUB_REF_NAME}" | tee scan.txt
+          grep -q "passed all security checks" scan.txt
