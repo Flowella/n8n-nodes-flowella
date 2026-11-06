@@ -4,6 +4,13 @@ All notable changes to this package are documented here. Versions follow SemVer 
 
 ## [Unreleased]
 
+## [0.1.0]
+
+### Changed
+
+- First stable release. The npm `latest` tag points at this version.
+- The publish scan waits until the registry serves the new version, then retries while provenance propagates. Scanner output is written to the job log.
+
 ## [0.1.0-alpha.1]
 
 ### Changed
