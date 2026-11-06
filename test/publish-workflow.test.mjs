@@ -35,6 +35,10 @@ test('publish workflow authenticates with GitHub OIDC, not a stored npm token', 
 	assert.doesNotMatch(publish, /secrets\.NPM_TOKEN/);
 	assert.doesNotMatch(publish, /_authToken/);
 });
+test('publish workflow requires the npm-publish environment approval gate', () => {
+	assert.match(publish, /environment:\s*npm-publish/);
+});
+
 
 test('publish workflow sets public access for a first provenance publish', () => {
 	// npm: "Can't generate provenance for new or private package, you must

@@ -65,6 +65,8 @@ jobs:
   publish:
     name: Publish to npm
     runs-on: ubuntu-latest
+    # Manual approval gate before npm publish (Settings → Environments → npm-publish).
+    environment: npm-publish
 
     permissions:
       # Required to mint an OIDC token for npm provenance attestation.
