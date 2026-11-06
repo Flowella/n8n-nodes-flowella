@@ -46,6 +46,17 @@ test('publish workflow sets public access for a first provenance publish', () =>
 	assert.match(publish, /NPM_CONFIG_ACCESS/);
 });
 
+test('publish workflow waits at least 10 minutes for the registry', () => {
+	// 0.1.0: npm served the version 2m37s after publish; a 10 x 15s wait gave
+	// up 5s early and failed a release that had actually shipped.
+	const scan = publish.slice(publish.indexOf('Scan the published package'));
+	const wait = scan.match(/for attempt in \$\(seq 1 (\d+)\)[\s\S]*?npm view/);
+	assert.ok(wait, 'registry wait loop must use seq so the bound is readable');
+	const sleep = scan.match(/Registry does not have[\s\S]*?sleep (\d+)/);
+	assert.ok(sleep, 'registry wait loop must sleep between attempts');
+	assert.ok(Number(wait[1]) * Number(sleep[1]) >= 600);
+});
+
 test('publish workflow retries the registry scan and keeps its output', () => {
 	// 0.1.0-alpha.1: npm said the package may take a few minutes to appear,
 	// the scanner then failed closed, and `npx | tee` block-buffered Node's

@@ -4,6 +4,10 @@ All notable changes to this package are documented here. Versions follow SemVer 
 
 ## [Unreleased]
 
+### Fixed
+
+- The publish scan waits up to 10 minutes for the registry to serve a new version. `0.1.0` took 2m37s and the previous 2.5 minute wait failed a release that had shipped.
+
 ## [0.1.0]
 
 ### Changed
