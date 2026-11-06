@@ -30,9 +30,10 @@ test('dist-tag derivation matches npm prerelease rules', () => {
 	assert.equal(distTagFor('2.0.0'), 'latest');
 });
 
-test('publish workflow keeps provenance and token path intact', () => {
+test('publish workflow authenticates with GitHub OIDC, not a stored npm token', () => {
 	assert.match(publish, /id-token:\s*write/);
-	assert.match(publish, /secrets\.NPM_TOKEN/);
+	assert.doesNotMatch(publish, /secrets\.NPM_TOKEN/);
+	assert.doesNotMatch(publish, /_authToken/);
 });
 
 test('publish workflow sets public access for a first provenance publish', () => {

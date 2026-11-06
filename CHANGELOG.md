@@ -4,6 +4,12 @@ All notable changes to this package are documented here. Versions follow SemVer 
 
 ## [Unreleased]
 
+## [0.1.0-alpha.1]
+
+### Changed
+
+- Publish uses the npm Trusted Publisher on `publish.yml`. The workflow no longer writes an npm token.
+
 ### Added
 
 - Flowella API credential (`GET /v1/ping`) and declarative action node for messages, conversations, contacts, opt-outs, templates, and analytics.

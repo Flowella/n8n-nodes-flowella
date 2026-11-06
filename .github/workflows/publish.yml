@@ -85,18 +85,13 @@ jobs:
         run: 'npm ci'
 
       - name: Release
-        # Publishes to npm with a provenance attestation (requires id-token: write above).
-        # Lint and build run automatically as part of the release process.
-        #
-        # Option A (OIDC): leave NPM_TOKEN unset — the token step is skipped and
-        #   npm uses the OIDC exchange instead.
-        # Option B (token): set NPM_TOKEN in repo secrets — it is written to
-        #   .npmrc here before publishing.
+        # Publishes with GitHub OIDC (id-token: write). npm exchanges that
+        # token because this package has a Trusted Publisher for publish.yml.
+        # A stored NPM_TOKEN must not be written here: it overrides OIDC.
         run: |
-          [ -n "$NPM_TOKEN" ] && npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
           # `n8n-node release` runs a bare `npm publish` in CI and inherits
           # process.env. npm refuses a prerelease without a dist-tag, so pick
-          # one from package.json: 0.1.0-alpha.0 -> alpha, 0.1.0 -> latest.
+          # one from package.json: 0.1.0-alpha.1 -> alpha, 0.1.0 -> latest.
           version="$(node -p "require('./package.json').version")"
           if [[ "$version" == *-* ]]; then
             dist_tag="${version#*-}"
@@ -110,8 +105,6 @@ jobs:
           NPM_CONFIG_TAG="$dist_tag" NPM_CONFIG_ACCESS="public" npm run release
           # n8n-node release sees GITHUB_ACTIONS and publishes with provenance.
           # It does not open the local release-it prompts.
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Scan the published package
         run: |

@@ -1,59 +1,59 @@
 {
-    "name": "n8n-nodes-flowella",
-    "version": "0.1.0-alpha.0",
-    "description": "Flowella community node for n8n.",
-    "license": "MIT",
-    "homepage": "https://flowella.io",
-    "keywords": [
-        "n8n-community-node-package"
-    ],
-    "author": {
-        "name": "Flowella",
-        "email": "taha.durmus@discoverdigital.com"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/Flowella/n8n-nodes-flowella.git"
-    },
-    "scripts": {
-        "build": "n8n-node build",
-        "build:watch": "tsc --watch",
-        "dev": "n8n-node dev",
-        "lint": "n8n-node lint",
-        "lint:fix": "n8n-node lint --fix",
-        "generate": "node scripts/generate.mjs",
-        "generate:check": "node scripts/generate.mjs --check",
-        "test": "node --test test/*.mjs",
-        "release": "n8n-node release",
-        "prepublishOnly": "n8n-node prerelease"
-    },
-    "files": [
-        "dist"
-    ],
-    "n8n": {
-        "n8nNodesApiVersion": 1,
-        "strict": true,
-        "credentials": [
-            "dist/credentials/FlowellaApi.credentials.js"
-        ],
-        "nodes": [
-            "dist/nodes/Flowella/Flowella.node.js",
-            "dist/nodes/FlowellaTrigger/FlowellaTrigger.node.js"
-        ]
-    },
-    "devDependencies": {
-        "@n8n/node-cli": "^0.55.5",
-        "eslint": "9.32.0",
-        "prettier": "3.6.2",
-        "release-it": "^21.1.0",
-        "typescript": "5.9.2"
-    },
-    "peerDependencies": {
-        "n8n-workflow": "*"
-    },
-    "bugs": {
-        "url": "https://github.com/Flowella/n8n-nodes-flowella/issues"
-    },
-    "dependencies": {},
-    "flowellaApiContract": "1.1.0"
+	"name": "n8n-nodes-flowella",
+	"version": "0.1.0-alpha.1",
+	"description": "Flowella community node for n8n.",
+	"license": "MIT",
+	"homepage": "https://flowella.io",
+	"keywords": [
+		"n8n-community-node-package"
+	],
+	"author": {
+		"name": "Flowella",
+		"email": "taha.durmus@discoverdigital.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Flowella/n8n-nodes-flowella.git"
+	},
+	"scripts": {
+		"build": "n8n-node build",
+		"build:watch": "tsc --watch",
+		"dev": "n8n-node dev",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"generate": "node scripts/generate.mjs",
+		"generate:check": "node scripts/generate.mjs --check",
+		"test": "node --test test/*.mjs",
+		"release": "n8n-node release",
+		"prepublishOnly": "n8n-node prerelease"
+	},
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": true,
+		"credentials": [
+			"dist/credentials/FlowellaApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/Flowella/Flowella.node.js",
+			"dist/nodes/FlowellaTrigger/FlowellaTrigger.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "^0.55.5",
+		"eslint": "9.32.0",
+		"prettier": "3.6.2",
+		"release-it": "^21.1.0",
+		"typescript": "5.9.2"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	},
+	"bugs": {
+		"url": "https://github.com/Flowella/n8n-nodes-flowella/issues"
+	},
+	"dependencies": {},
+	"flowellaApiContract": "1.1.0"
 }
