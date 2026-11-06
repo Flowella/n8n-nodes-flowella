@@ -119,12 +119,13 @@ jobs:
           spec="n8n-nodes-flowella@${GITHUB_REF_NAME}"
           echo "Waiting until ${spec} is readable on the registry"
           ready=0
-          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+          # 0.1.0 became readable 2m37s after publish, so allow 10 minutes.
+          for attempt in $(seq 1 40); do
             if npm view "$spec" version; then
               ready=1
               break
             fi
-            echo "Registry does not have ${spec} yet (attempt ${attempt}/10)"
+            echo "Registry does not have ${spec} yet (attempt ${attempt}/40)"
             sleep 15
           done
           if [[ "$ready" != 1 ]]; then
