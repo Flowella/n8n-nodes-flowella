@@ -45,3 +45,17 @@ test('publish workflow sets public access for a first provenance publish', () =>
 	// set `access` to public" — a new package has no public default yet.
 	assert.match(publish, /NPM_CONFIG_ACCESS/);
 });
+
+test('publish workflow retries the registry scan and keeps its output', () => {
+	// 0.1.0-alpha.1: npm said the package may take a few minutes to appear,
+	// the scanner then failed closed, and `npx | tee` block-buffered Node's
+	// stdout so the job log never showed why grep missed the success line.
+	const scan = publish.slice(publish.indexOf('Scan the published package'));
+	assert.match(scan, /for attempt in/);
+	assert.match(scan, /npx --yes @n8n\/scan-community-package/);
+	assert.match(scan, />scan\.txt 2>&1/);
+	assert.doesNotMatch(scan, /scan-community-package[^\n]*\| tee/);
+	assert.match(scan, /passed all security checks/);
+	assert.match(scan, /ESLint violations/);
+	assert.match(scan, /cat scan\.txt/);
+});

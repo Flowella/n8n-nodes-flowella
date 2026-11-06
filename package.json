@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-flowella",
-	"version": "0.1.0-alpha.1",
+	"version": "0.1.0",
 	"description": "Flowella community node for n8n.",
 	"license": "MIT",
 	"homepage": "https://flowella.io",
