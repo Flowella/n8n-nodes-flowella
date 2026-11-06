@@ -34,3 +34,9 @@ test('publish workflow keeps provenance and token path intact', () => {
 	assert.match(publish, /id-token:\s*write/);
 	assert.match(publish, /secrets\.NPM_TOKEN/);
 });
+
+test('publish workflow sets public access for a first provenance publish', () => {
+	// npm: "Can't generate provenance for new or private package, you must
+	// set `access` to public" — a new package has no public default yet.
+	assert.match(publish, /NPM_CONFIG_ACCESS/);
+});

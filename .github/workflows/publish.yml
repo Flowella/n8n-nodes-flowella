@@ -105,7 +105,9 @@ jobs:
             dist_tag="latest"
           fi
           echo "Publishing n8n-nodes-flowella@$version with dist-tag $dist_tag"
-          NPM_CONFIG_TAG="$dist_tag" npm run release
+          # Provenance on a brand-new package also needs explicit public
+          # access, otherwise npm aborts with EUSAGE before uploading.
+          NPM_CONFIG_TAG="$dist_tag" NPM_CONFIG_ACCESS="public" npm run release
           # n8n-node release sees GITHUB_ACTIONS and publishes with provenance.
           # It does not open the local release-it prompts.
         env:
