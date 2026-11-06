@@ -94,7 +94,18 @@ jobs:
         #   .npmrc here before publishing.
         run: |
           [ -n "$NPM_TOKEN" ] && npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
-          npm run release
+          # `n8n-node release` runs a bare `npm publish` in CI and inherits
+          # process.env. npm refuses a prerelease without a dist-tag, so pick
+          # one from package.json: 0.1.0-alpha.0 -> alpha, 0.1.0 -> latest.
+          version="$(node -p "require('./package.json').version")"
+          if [[ "$version" == *-* ]]; then
+            dist_tag="${version#*-}"
+            dist_tag="${dist_tag%%.*}"
+          else
+            dist_tag="latest"
+          fi
+          echo "Publishing n8n-nodes-flowella@$version with dist-tag $dist_tag"
+          NPM_CONFIG_TAG="$dist_tag" npm run release
           # n8n-node release sees GITHUB_ACTIONS and publishes with provenance.
           # It does not open the local release-it prompts.
         env:
